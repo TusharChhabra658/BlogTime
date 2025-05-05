@@ -5,7 +5,28 @@
     <title>Home</title>
   </head>
   <body>
-    <%- include("./partials/scripts") %>
     <%- include("./partials/nav")%>
+    <div class="container mt-3">
+      <div class="row row-cols-4">
+        <% blogs.forEach(blog => { %>
+        <div class="col">
+          <div class="card col mb-4" style="width: 18rem ;box-shadow: 5px 5px 10px 5px rgb(190, 190, 190) ">
+            <img
+              src="<%= blog.coverImageUrl %>"
+              class="card-img-top"
+              height="200vh"
+            />
+            <div class="card-body">
+              <h5 class="card-title"><%= blog.title %></h5>
+              <a href="/blog/<%= blog._id %>" class="btn btn-primary"
+                >Read blog</a
+              >
+            </div>
+          </div>
+        </div>
+        <% }) %>
+      </div>
+    </div>
+    <%- include("./partials/scripts") %>
   </body>
 </html>
