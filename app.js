@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const path = require("path");
 const connectDb = require("./connect");
@@ -8,7 +9,7 @@ const cookieParser = require("cookie-parser");
 const { checkAuthentication } = require("./middlewares/authentication");
 
 const app = express();
-connectDb("mongodb://localhost:27017/blogTime")
+connectDb(process.env.MONGO_URI)
   .then(() => console.log("Server connected to mongodb"))
   .catch((err) => console.log("mongo error", err));
 
@@ -32,5 +33,5 @@ app.get("/", async (req, res) => {
   });
 });
 
-const PORT = 8000;
+const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
