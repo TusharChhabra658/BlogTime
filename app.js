@@ -16,12 +16,14 @@ connectDb(process.env.MONGO_URI)
 app.set("view engine", "ejs");
 app.set("views", path.resolve("./views"));
 
+//Middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(checkAuthentication("token"));
 app.use(express.static(path.resolve("./public")));
 
+//Routes
 app.use("/user", userRoute);
 app.use("/blog", blogRoute);
 
