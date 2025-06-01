@@ -23,6 +23,14 @@ router.get("/add-new", (req, res) => {
   });
 });
 
+router.get("/my-blogs", async (req, res) => {
+  const myBlogs = await Blog.find({ createdBy: req.user }).populate("createdBy");
+  res.render("home", {
+    user: req.user,
+    blogs: myBlogs,
+  });
+});
+
 router.get("/:id", async (req, res) => {
   const blog = await Blog.findById(req.params.id).populate("createdBy");
   const comments = await Comment.find({ blogId: req.params.id }).populate(

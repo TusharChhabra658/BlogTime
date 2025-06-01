@@ -17,7 +17,9 @@ router.post("/signup", async (req, res) => {
     email,
     password,
   });
-  return res.redirect("/");
+  return res.render("login",{
+    msg:"Profile created successfully. Now you can login!"
+  });
 });
 
 router.post("/login", async (req, res) => {
