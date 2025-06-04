@@ -24,10 +24,13 @@ router.get("/add-new", (req, res) => {
 });
 
 router.get("/my-blogs", async (req, res) => {
-  const myBlogs = await Blog.find({ createdBy: req.user }).populate("createdBy");
+  const myBlogs = await Blog.find({ createdBy: req.user }).populate(
+    "createdBy"
+  );
   res.render("home", {
     user: req.user,
     blogs: myBlogs,
+    myBlog: true,
   });
 });
 
@@ -61,6 +64,20 @@ router.post("/", upload.single("coverImage"), async (req, res) => {
     createdBy: req.user._id,
   });
   res.redirect("/");
+});
+
+router.delete("/:id", async (req, res) => {
+  const id = req.params.id;
+  try {
+    const result = await Blog.deleteOne({ _id: id });
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ success: false, message: "Blog not found" });
+    }
+    await Comment.deleteMany({ blogId: id });
+    res.status(200).json({ success: true, message: "Blog deleted successfully" });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
 });
 
 module.exports = router;
