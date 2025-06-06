@@ -37,8 +37,11 @@
                   class="btn btn-danger mt-auto"
                   id="delete-btn-<%= blog._id %>"
                 >
-                  Delete blog
+                  Delete
                 </button>
+                <a href="/blog/<%= blog._id %>/edit" class="btn btn-secondary mt-auto">
+                  Edit
+                </a>
                 <% } %>
               </div>
             </div>

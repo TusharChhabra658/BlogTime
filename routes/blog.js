@@ -71,12 +71,68 @@ router.delete("/:id", async (req, res) => {
   try {
     const result = await Blog.deleteOne({ _id: id });
     if (result.deletedCount === 0) {
-      return res.status(404).json({ success: false, message: "Blog not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Blog not found" });
     }
     await Comment.deleteMany({ blogId: id });
-    res.status(200).json({ success: true, message: "Blog deleted successfully" });
+    res
+      .status(200)
+      .json({ success: true, message: "Blog deleted successfully" });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+router.get("/:id/edit", async (req, res) => {
+  try {
+    const blog = await Blog.findById(req.params.id);
+    if (!blog) {
+      return res.status(404).send("Blog not found");
+    }
+    res.render("editBlog", {
+      blog,
+      user: req.user,
+    });
+  } catch (error) {
+    res.status(500).send("Server error");
+  }
+});
+
+router.patch("/:id/edit", upload.single("image"), async (req, res) => {
+  try {
+    const id = req.params.id;
+    const blog = await Blog.findById(id);
+    
+    if (!blog) {
+      return res.status(404).json({ success: false, message: "Blog not found" });
+    }
+    
+    const { title, body } = req.body;
+    const updatedBlog = await Blog.findByIdAndUpdate(
+      id,
+      {
+        title,
+        body,
+        coverImageUrl: req.file
+          ? `/uploads/${req.file.filename}`
+          : blog.coverImageUrl,
+      },
+      { new: true }
+    );
+    
+    res.status(200).json({ 
+      success: true, 
+      message: "Blog updated successfully",
+      blog: updatedBlog 
+    });
+    
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ 
+      success: false, 
+      message: "Failed to update blog" 
+    });
   }
 });
 
